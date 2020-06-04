@@ -144,7 +144,7 @@ export default {
         box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.08);
         &-col{
             width: 300px;
-            min-width: 80px;
+            min-width: 240px;
             & .row{
                 height: 45px;
                 position: relative;
@@ -195,8 +195,12 @@ export default {
         }
     }
 
-@media screen and (max-width:1030px) {
+@media screen and (max-width:1040px) {
+
     .form-info{
+        &-col{
+            width: 100%;
+        }
         &-checkbox{
             bottom: 30px;
             left:0;
