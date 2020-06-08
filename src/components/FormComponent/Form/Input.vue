@@ -22,7 +22,10 @@ export default {
             default:'text'
         },
         data:{},
-        placeholder:{}
+        placeholder:{},
+        cyril:{
+            default:false
+        }
     },
     data(){
         return {
@@ -70,10 +73,12 @@ export default {
         color: #3E3E3E;
         position: absolute;
         top:0;
+        font-family: OpenSans;
     }
     &-input{
+        font-family: OpenSans;
         font-size: 20px;
-        color: black;
+        color: #231f20;
         cursor: pointer;
         border:none;
         outline: none;

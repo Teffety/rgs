@@ -1,13 +1,10 @@
 <template>
     <div class="form">
         <FormInfo
+            v-if="!formInfo.status"
             v-model="formInfo"
         />
-
-        <transition >
-            <FormUser v-if="formInfo.status" :data="formInfo.data"/>
-        </transition>
-        
+        <FormUser v-else :data="formInfo.data"/>    
     </div>
 </template>
 <script>
@@ -29,12 +26,16 @@ export default {
     },
     watch: {
         formInfo:function(val){
-            console.log(val.status)
+            
         }
     },
 }
 </script>
 <style lang="scss">
+@font-face {
+    font-family: OpenSans;
+    src: url(FormComponent/Form/OpenSansRegular.woff2);
+}
 .form{
     position: relative;
     display: flex;

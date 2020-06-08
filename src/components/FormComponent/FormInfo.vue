@@ -18,13 +18,16 @@
             <Input class="row" type="number" title="номер стс" :data="inputNSTS" v-model="inputNSTS"/>
         </div>
         <div class="form-info-checkbox"> 
-                <input type="checkbox" value="checkbox" v-model="inputCheckbox" id="form-checkbox"/>
-                <div class="custom-checkbox"></div>
-                <label for="#form-checkbox">
+                <div class="custom-checkbox" :class="{'active':inputCheckbox}" @click="changeCheckbox">
+                    <Icon v-if="inputCheckbox" class="svg__ok" icon="galochka"/>
+                </div>
+                <span @click="changeCheckbox">
                     Подтверждаю свое 
-                        <a class="form-info-checkbox-link">Согласие на обработку персональных данных</a>
+                </span>
+                <a class="form-info-checkbox-link">Согласие на обработку персональных данных</a>
+                <span @click="changeCheckbox">
                     и запрос в БКИ
-                </label>
+                </span>
         </div>
         <button class="form-info-next"  @click="next">Далее</button>
     </div>
@@ -32,10 +35,12 @@
 <script>
 import Select from './Form/Select'
 import Input from './Form/Input'
+import Icon from './Form/Icon'
 export default {
     components:{
         Select,
-        Input
+        Input,
+        Icon
     },
     watch:{
         inputNSTS:function(val){
@@ -105,6 +110,9 @@ export default {
 
     },
     methods:{
+        changeCheckbox(){
+            this.inputCheckbox = !this.inputCheckbox
+        },
         next(){            
             const array = [
                 this.selectMark,
@@ -139,9 +147,9 @@ export default {
         flex-flow: row wrap;
         align-items: flex-start;
         justify-content: center;
-        padding:60px 60px 100px 60px;
+        padding: 60px;
         background: #FFFFFF;
-        box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.08);
+        box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.06);
         &-col{
             width: 300px;
             min-width: 240px;
@@ -172,29 +180,56 @@ export default {
             padding: 15px 60px;
             color: white;
             transform: translateY(50%);
+            outline: none;
+            cursor: pointer;
         }
         &-checkbox{
             font-size: 14px;
             left: calc(50% - 180px);
-            bottom: 100px;
+            bottom: 60px;
             padding: 20px;
             position: absolute;
             display: flex;
             justify-content: center;
             align-items: center;
-            & label{
-                margin-left: 10px;
-            }
-            &.row:after{
-                content: none;
-            }
+            cursor: pointer;
+            user-select:none;
             &-link{
             color: #B31B2C;
-
-        }
+            }
+            & .active{
+                background-color: #B31B2C;
+                position: relative;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            & > *{
+                margin: 0px 10px 0px 0px
+            }
         }
     }
-
+    .svg__ok{
+        position: absolute;
+        top: 2px;
+        left: 2px;
+    }
+    #form-checkbox{
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 20px;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+    }
+    .custom-checkbox{
+        width: 20px;
+        height: 20px;
+        border: solid 1px #d0d4d9;
+        border-radius: 2px;
+    }
 @media screen and (max-width:1040px) {
 
     .form-info{
