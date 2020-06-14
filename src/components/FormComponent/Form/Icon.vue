@@ -1,12 +1,17 @@
 <template>
-  <svg
+  <div class="status__bar">
+    <svg
       xmlns="http://www.w3.org/2000/svg"
       xmlns:xlink="http://www.w3.org/1999/xlink"
       @click="$emit('click')"
       v-html="svgs[index].svg"
       :viewBox="svgs[index].viewBox"
       :fill="color"
-  />
+    />
+    <span class="status__bar-tooltip" v-if="message">
+      {{message}}
+    </span>
+  </div>
 </template>
 <script>
 export default {
@@ -18,7 +23,8 @@ export default {
       },
       color:{
         default:''
-      }
+      },
+      message:{}
     },
 
     computed: {
@@ -43,17 +49,54 @@ export default {
                   name:'galochka',
                   viewBox:'0 0 26 26',
                   svg:`<path fill="white" d="M 22.566406 4.730469 L 20.773438 3.511719 C 20.277344 3.175781 19.597656 3.304688 19.265625 3.796875 L 10.476563 16.757813 L 6.4375 12.71875 C 6.015625 12.296875 5.328125 12.296875 4.90625 12.71875 L 3.371094 14.253906 C 2.949219 14.675781 2.949219 15.363281 3.371094 15.789063 L 9.582031 22 C 9.929688 22.347656 10.476563 22.613281 10.96875 22.613281 C 11.460938 22.613281 11.957031 22.304688 12.277344 21.839844 L 22.855469 6.234375 C 23.191406 5.742188 23.0625 5.066406 22.566406 4.730469 Z"/>`
+                },
+                {
+                  name:'close',
+                  viewBox:'0 0 12 12',
+                  svg:`
+                      <line x1="10.2142" y1="0.707107" x2="0.707054" y2="10.2143" stroke="#999999" stroke-linecap="round"/>
+                      <line x1="10.2928" y1="10.2144" x2="0.785591" y2="0.707177" stroke="#999999" stroke-linecap="round"/>`
                 }
             ]
         }
     }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 svg{
     height: 15px;
     width: 15px;
+    position: relative;
+}
+
+.status__bar{
+  position: absolute;
+  height: 15px;
+  width: 15px;
+  top: calc(50% - 25px);
+  right: 25px;
+  &:hover &-tooltip{    
+      display: block;
+  }
+  &-tooltip{
+    min-width: 12.5rem;
+    max-width: 15rem;
+    background-color: white;
+    border-radius: 0.2rem;
+    box-shadow: 0 0.2rem 0.8rem rgba(211, 211, 211, 0.5);
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.004rem;
+    line-height: 1.2;
+    color: #3e3e3e;
     position: absolute;
-    right: 25px;
+    right: 100%;
+    z-index: 10;
+    margin-right: 1rem;
+    top: 50%;
+    padding: 0.8rem 0.9rem;
+    display: none;
+    transform: translateY(-50%);
+  }
 }
 </style>

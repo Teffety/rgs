@@ -1,25 +1,25 @@
 <template>
     <div class="form-info">
         <div class="form-info-col">
-            <Select class="row" title="Марка" :data="selectMark"  v-model="selectMark.text"></Select>
-            <Select class="row" title="Модель" :data="selectModel"  v-model="selectModel.text"></Select>
-            <Select class="row" title="Год Выпуска" :data="selectYear"  v-model="selectYear.text"></Select>
-            <Input class="row" title="vin номер" :data="inputVIN" v-model="inputVIN.text"/>
-            <Input class="row" title="гос номер" :data="inputNum" v-model="inputNum.text"/>
+            <Select class="row" title="Марка" :selectData="getMarks" v-model="form.selectMark" @input="$emit('input',form)"></Select>
+            <Select class="row" title="Модель" :selectData="getModels" :selectMark="form.selectMark" :disabled="isDisabled" v-model="form.selectModel" @input="$emit('input',form)"></Select>
+            <Select class="row" title="Год Выпуска" :selectData="selectYearArray" v-model="form.selectYear" @input="$emit('input',form)"></Select>
+            <Input class="row" title="vin номер" masked="NNNNNNNNNNNNNNNNN" :data="form.inputVIN" v-model="form.inputVIN" @input="$emit('input',form)"/>
+            <Input class="row" title="гос номер" placeholder='A 123 AA 123' up="true" masked='C DDD CC DDD' :data="form.inputNum" v-model="form.inputNum" @input="$emit('input',form)"/>
         </div>
         <div class="form-info-col">
-            <Select class="row" title="Категория тс" :data="selectTC" v-model="selectTC.text"></Select>
-            <Select class="row" title="вид птс" :data="selectPTC" v-model="selectPTC.text"></Select>
-            <Input class="row" type="number" title="серия птс" :data="inputSPTC" v-model="inputSPTC"/>
-            <Input class="row" type="number" title="номер птс" :data="inputNPTS" v-model="inputNPTS"/>
+            <Select class="row" title="Категория тс" :selectData="getPtsTypes" v-model="form.selectTC" @input="$emit('input',form)"></Select>
+            <Select class="row" title="вид птс" :selectData="getCategories" v-model="form.selectPTC" @input="$emit('input',form)"></Select>
+            <Input class="row" masked="DDDD" placeholder="1234" title="серия птс" :data="form.inputSPTC" v-model="form.inputSPTC" @input="$emit('input',form)"/> 
+            <Input class="row" masked="DDDDDD" placeholder="123456" title="номер птс" :data="form.inputNPTS" v-model="form.inputNPTS" @input="$emit('input',form)"/>
         </div>
         <div class="form-info-col">
-            <Input class="row" type="number" title="серия стс" :data="inputSSTS" v-model="inputSSTS"/>
-            <Input class="row" type="number" title="номер стс" :data="inputNSTS" v-model="inputNSTS"/>
+            <Input class="row" masked="DDDD" placeholder="1234" title="серия стс" :data="form.inputSSTS" v-model="form.inputSSTS" @input="$emit('input',form)"/>
+            <Input class="row" masked="DDDDDD" placeholder="123456" title="номер стс" :data="form.inputNSTS" v-model="form.inputNSTS" @input="$emit('input',form)"/>
         </div>
         <div class="form-info-checkbox"> 
-                <div class="custom-checkbox" :class="{'active':inputCheckbox}" @click="changeCheckbox">
-                    <Icon v-if="inputCheckbox" class="svg__ok" icon="galochka"/>
+                <div class="custom-checkbox" :class="{'active':form.inputCheckbox}" @click="changeCheckbox">
+                    <Icon v-if="form.inputCheckbox" class="svg__ok" icon="galochka"/>
                 </div>
                 <span @click="changeCheckbox">
                     Подтверждаю свое 
@@ -29,10 +29,10 @@
                     и запрос в БКИ
                 </span>
         </div>
-        <button class="form-info-next"  @click="next">Далее</button>
     </div>
 </template>
 <script>
+import {mapState} from 'vuex'
 import Select from './Form/Select'
 import Input from './Form/Input'
 import Icon from './Form/Icon'
@@ -42,99 +42,48 @@ export default {
         Input,
         Icon
     },
-    watch:{
-        inputNSTS:function(val){
-            console.warn(val)
-        }
-    },
     props:['value'],
+    computed:{
+        ...mapState({
+            getMarks: s => s.data.marks,
+            getModels: s => s.data.models,
+            getPtsTypes: s => s.data.ptsTypes,
+            getCategories: s => s.data.categories
+        }),
+        selectYearArray(){
+            const startYear = 1950;
+            let date = new Date().getFullYear()
+            const array = []
+            for(; startYear < date; date--){
+                array.push({
+                    name:`${date}`,
+                    code:`${date}`
+                })
+            }
+            return array
+        },
+    },
     data(){
         return {
-            selectMark:{
-                text:'',
-                error:false,
-                success:false
-            },
-            selectModel:{
-                text:'',
-                error:false,
-                success:false
-            },
-            selectYear:{
-                text:'',
-                error:false,
-                success:false
-            },
-            selectTC:{
-                text:'',
-                error:false,
-                success:false
-            },
-            selectPTC:{
-                text:'',
-                error:false,
-                success:false
-            },
-            inputVIN:{
-                text:'',
-                error:false,
-                success:false
-            },
-            inputNum:{
-                text:'',
-                error:false,
-                success:false
-            },
-            inputSPTC:{
-                text:'',
-                error:false,
-                success:false
-            },
-            inputNPTS:{
-                text:'',
-                error:false,
-                success:false
-            },
-            inputSSTS:{
-                text:'',
-                error:false,
-                success:false
-            },
-            inputNSTS:{
-                text:'',
-                error:false,
-                success:false
-            },
-            inputCheckbox:false
+            form:'',
+            isDisabled:true
         }
-
+    },
+    watch:{
+        value(val){
+            this.form = JSON.parse(JSON.stringify(val));    
+        },
+        'form.selectMark':function(val){
+            this.isDisabled = !val.success
+        }
+    },
+    mounted(){
+        this.form = JSON.parse(JSON.stringify(this.value));
     },
     methods:{
         changeCheckbox(){
-            this.inputCheckbox = !this.inputCheckbox
-        },
-        next(){            
-            const array = [
-                this.selectMark,
-                this.selectModel,
-                this.selectYear,
-                this.selectTC,
-                this.selectPTC,
-                this.inputVIN,
-                this.inputNum,
-                this.inputSPTC,
-                this.inputNPTS,
-                this.inputSSTS,
-                this.inputNSTS,
-            ]  
-            let object = { status: this.inputCheckbox}
-            if(this.inputCheckbox) {
-                object = {
-                    status: array.some(el => el.success === true && el.error === false),
-                    data: array
-                }
-            }     
-            this.$emit('input', object)
+            this.form.inputCheckbox = !this.form.inputCheckbox
+            this.$emit('input',this.form)
         }
     }
 }

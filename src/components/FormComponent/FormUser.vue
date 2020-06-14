@@ -1,96 +1,63 @@
 <template>
     <div class="form-user">
         <div class="form-user-col">
-            <Input class="row" type="text" cyril title="Фамилия" :data="inputLastName" v-model="inputLastName"/>
-            <Input class="row" type="text" cyril title="Имя" :data="inputName" v-model="inputName"/>
-            <Input class="row" type="text" cyril title="Отчество" :data="inputPatranom" v-model="inputPatranom"/>
-            <Select class="row" title="Пол" />
+            <Input class="row cyril"  cyril="true" placeholder="Иванов" title="Фамилия" :data="form.inputLastName" v-model="form.inputLastName" @input="$emit('input',form)"/>
+            <Input class="row cyril"  cyril="true" placeholder="Иван" title="Имя" :data="form.inputName" v-model="form.inputName" @input="$emit('input',form)"/>
+            <Input class="row cyril"  cyril="true" placeholder="Иванович" patr="true" title="Отчество" :data="form.inputPatranom" v-model="form.inputPatranom" @input="$emit('input',form)"/>
+            <Select class="row" type="text" v-model="form.selectSex" :selectData="gender" title="Пол"  @input="$emit('input',form)"/>
         </div>
         <div class="form-user-col">
-            <Input class="row" type="number" title="Дата Рождения" :data="dateBirth" v-model="dateBirth"/>
-            <Input class="row" type="number" title="Серия паспорта" :data="serialPasp" v-model="serialPasp"/>
-            <Input class="row" type="number" title="номер паспорта" :data="numPasp" v-model="numPasp"/>
+            <Input class="row" date="true" masked="DD.DD.DDDD" placeholder="дд.мм.гг" title="Дата Рождения" :data="form.dateBirth" v-model="form.dateBirth" @input="$emit('input',form)"/>
+            <Input class="row" masked="DDDD" placeholder="1234" title="Серия паспорта" :data="form.serialPasp" v-model="form.serialPasp" @input="$emit('input',form)"/>
+            <Input class="row" masked="DDDDDD" placeholder="123456" title="номер паспорта" :data="form.numPasp" v-model="form.numPasp" @input="$emit('input',form)"/>
         </div>
         <div class="form-user-col">
-            <Input class="row" type="number" title="Мобильный телефон" :data="phone" v-model="phone"/>
-            <Input class="row" type="email" title="Электронная почта" :data="email" v-model="email"/>
-            <Input class="row" type="email" title="Подтвердите электронную почту" :data="secEmail" v-model="secEmail"/>
+            <Input class="row" tel="true" masked="+7 (9DD) DDD-DD-DD" placeholder="+7 (123) 456 78 90" title="Мобильный телефон" :data="form.phone" v-model="form.phone" @input="$emit('input',form)"/>
+            <Input class="row" email="true" placeholder="ivanovivan@mail.ru" title="Электронная почта"  :data="form.email" v-model="form.email" @input="$emit('input',form)"/>
+            <Input class="row" email="true" placeholder="ivanovivan@mail.ru" title="Подтвердите электронную почту" :checkEmail="form.email"  :data="form.secEmail" v-model="form.secEmail" @input="$emit('input',form)"/>
         </div>
-        <button class="form-info-next"  @click="sell">Оплатить</button>
+        <div class="price" v-if="getPrice">
+            <span class="price-text">
+                стоимость полиса
+                <p>{{price}} &#8381;</p> 
+            </span>
+        </div>
     </div>
 </template>
 <script>
-import Select from './Form/Select'
-import Input from './Form/Input'
+import {mapState} from 'vuex';
+import Select from './Form/Select';
+import Input from './Form/Input';
+
 export default {
     components:{
         Select,
         Input
     },
-    props:['data'],
+    props:['data','value'],
     data(){
         return {
-            inputName:{
-                text:'',
-                error:false,
-                success:false
-                },
-            inputLastName:{
-                text:'',
-                error:false,
-                success:false
-                },
-            inputPatranom:{
-                text:'',
-                error:false,
-                success:false
-                },
-            selectSex:{
-                text:'',
-                error:false,
-                success:false
-                },
-            dateBirth:{
-                text:'',
-                error:false,
-                success:false
-                },
-            serialPasp:{
-                text:'',
-                error:false,
-                success:false
-                },
-            numPasp:{
-                text:'',
-                error:false,
-                success:false
-                },
-            phone:{
-                text:'',
-                error:false,
-                success:false
-                },
-            email:{
-                text:'',
-                error:false,
-                success:false
-                },
-            secEmail:{
-                text:'',
-                error:false,
-                success:false
-                }
+            form:''
         }
     },
-    methods:{
-        sell(){
-            this.data
-            console.warn()
+    mounted(){
+        this.form = JSON.parse(JSON.stringify(this.value));
+    },
+    watch:{
+        value(val){
+            this.form = JSON.parse(JSON.stringify(val));
         }
-    }
+    },
+    computed:{
+        ...mapState({
+            gender: s => s.data.gender,
+            getPrice: s => s.data.getPrice,
+            price: s => s.data.price
+        })
+    },
 }
 </script>
-<style lang="scss">
+<style lang="scss" >
     .form-user{
         display: flex;
         width: fit-content;
@@ -119,6 +86,9 @@ export default {
                     bottom: 20px;
                     left:0;
                     background-color: #D0D4D9;
+                }
+                &.cyril input{
+                    text-transform: capitalize;
                 }
             }
         }
@@ -160,4 +130,38 @@ export default {
             }
         }
     }
+    .price{
+        background: #F9F9F9;
+        border-radius: 2px;
+        width: 100%;
+        min-height: 70px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+        text-align: center;
+        &-text{
+            color: #3E3E3E;
+            font-size:18px;
+            & p{ 
+                color:#B31B2C;
+                font-size: 25px;
+                margin: 0;
+            }
+        }
+    }
+    @media screen and (max-width:1040px) {
+
+    .form-user{
+        &-col{
+            width: 100%;
+        }
+        &-checkbox{
+            bottom: 30px;
+            left:0;
+            width: 100%;
+
+        }
+    }
+}
 </style>
