@@ -67,8 +67,10 @@ export default new Vuex.Store({
             }
           })
           if(res && res.data.status){
-            commit('setData', {path:'loadMessage',value:res.data.status})
-            commit('setData', {path:'loadMessage',value: true})
+            console.warn(res.data.data.urlToRedirect)
+            window.open(res.data.data.urlToRedirect, '_blank')
+            // commit('setData', {path:'loadMessage',value:res.data.status})
+            // commit('setData', {path:'loadMessage',value: true})
             if(res && res.data.data.message) commit('setData',{path:'getMessage', value:res.data.data.message})
           }
         }catch(e){

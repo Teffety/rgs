@@ -1,14 +1,14 @@
 <template>
     <div class="form-info">
         <div class="form-info-col">
-            <Select class="row" title="Марка" :selectData="getMarks" v-model="form.selectMark" @input="$emit('input',form)"></Select>
+            <Select class="row" title="Марка" :write="false" :selectData="getMarks" v-model="form.selectMark" @input="$emit('input',form)"></Select>
             <Select class="row" title="Модель" :selectData="getModels" :selectMark="form.selectMark" :disabled="isDisabled" v-model="form.selectModel" @input="$emit('input',form)"></Select>
             <Select class="row" title="Год Выпуска" :selectData="selectYearArray" v-model="form.selectYear" @input="$emit('input',form)"></Select>
             <Input class="row" title="vin номер" masked="NNNNNNNNNNNNNNNNN" :data="form.inputVIN" v-model="form.inputVIN" @input="$emit('input',form)"/>
             <Input class="row" title="гос номер" placeholder='A 123 AA 123' up="true" masked='C DDD CC DDD' :data="form.inputNum" v-model="form.inputNum" @input="$emit('input',form)"/>
         </div>
         <div class="form-info-col">
-            <Select class="row" title="Категория тс" :selectData="getPtsTypes" v-model="form.selectTC" @input="$emit('input',form)"></Select>
+            <Select class="row" title="Категория тс" :write="false" :selectData="getPtsTypes" v-model="form.selectTC" @input="$emit('input',form)"></Select>
             <Select class="row" title="вид птс" :selectData="getCategories" v-model="form.selectPTC" @input="$emit('input',form)"></Select>
             <Input class="row" masked="DDDD" placeholder="1234" title="серия птс" :data="form.inputSPTC" v-model="form.inputSPTC" @input="$emit('input',form)"/> 
             <Input class="row" masked="DDDDDD" placeholder="123456" title="номер птс" :data="form.inputNPTS" v-model="form.inputNPTS" @input="$emit('input',form)"/>

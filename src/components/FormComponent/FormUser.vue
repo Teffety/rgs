@@ -4,7 +4,7 @@
             <Input class="row cyril"  cyril="true" placeholder="Иванов" title="Фамилия" :data="form.inputLastName" v-model="form.inputLastName" @input="$emit('input',form)"/>
             <Input class="row cyril"  cyril="true" placeholder="Иван" title="Имя" :data="form.inputName" v-model="form.inputName" @input="$emit('input',form)"/>
             <Input class="row cyril"  cyril="true" placeholder="Иванович" patr="true" title="Отчество" :data="form.inputPatranom" v-model="form.inputPatranom" @input="$emit('input',form)"/>
-            <Select class="row" type="text" v-model="form.selectSex" :selectData="gender" title="Пол"  @input="$emit('input',form)"/>
+            <Select class="row" :write="false" type="text" v-model="form.selectSex" :selectData="gender" title="Пол"  @input="$emit('input',form)"/>
         </div>
         <div class="form-user-col">
             <Input class="row" date="true" masked="DD.DD.DDDD" placeholder="дд.мм.гг" title="Дата Рождения" :data="form.dateBirth" v-model="form.dateBirth" @input="$emit('input',form)"/>

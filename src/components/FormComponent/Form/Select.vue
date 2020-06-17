@@ -3,12 +3,22 @@
         <div class="select-title" >{{title}}</div>
         <div class="select-label">
             <div class="select-message">
-                <input type="text" v-model="params.text" :placeholder="placeholder" :disabled="disabled" @focus="opened" @blur="opened">
+                <div class="select-input">
+                    <input type="text" class="select-write" :class="{'can-write':write}" v-model="params.text" :placeholder="placeholder" :disabled="disabled" @focus="opened" @blur="opened">
+                    <span v-if="!params.text && !write">{{placeholder}}</span>
+                    <span class="input-input" v-else-if="!write">{{params.text}}</span>
+                    <Icon class="select-arrow" :class="{'select-arrow-opened':isOpen}" icon="arrow"></Icon>
+                </div>
                 <Icon v-if="params.success" icon="ok"></Icon>
                 <Icon v-if="params.error" :message="params.message" icon="error"></Icon>
             </div>
-            <div class="select-block" v-if="isOpen" @mouseenter="enterLeave" @mouseleave="enterLeave">
-                <span v-for="(item, idx) in getSelectedData" :key="idx"  @click="click(item)">
+            <div class="select-block" v-if="isOpen && write" @mouseenter="enterLeave" @mouseleave="enterLeave">
+                <span class="select-hover" v-for="(item, idx) in getSelectedData" :key="idx"  @click="click(item)">
+                    {{item.name}}
+                </span>
+            </div>
+            <div class="select-block" v-else-if="isOpen && !write" @mouseenter="enterLeave" @mouseleave="enterLeave">
+                <span class="select-hover" v-for="(item, idx) in selectData" :key="idx"  @click="click(item)">
                     {{item.name}}
                 </span>
             </div>
@@ -38,6 +48,9 @@ export default {
         },
         disabled:{
             default:false
+        },
+        write:{
+            default:true
         },
         selectData:{},
         selectMark:{}
@@ -95,6 +108,9 @@ export default {
                 this.isOpen = !this.isOpen                
             }
         },
+        t(e){
+            console.warn(e)
+        },
         enterLeave(){
             this.isSelect = !this.isSelect
         }
@@ -116,7 +132,7 @@ export default {
         cursor: pointer;
         position: absolute;
         width: 100%;
-
+        
         & > input{
             cursor: pointer;
             background-color: transparent;
@@ -128,6 +144,22 @@ export default {
     &-label{
         position: relative;
         height: 25px;
+    }
+    &-write{
+        opacity: 0;
+        width: 100%;
+        opacity: 0;
+        position: absolute;
+        width: calc(100% - 50px);
+        cursor: pointer;
+        background-color: transparent;
+        border: none;
+        font-size: 20px;
+        outline: none;
+        &.can-write{
+            opacity: 1;
+            width: 100%;
+        }
     }
     &-block{
         position: absolute;
@@ -149,6 +181,21 @@ export default {
             cursor: pointer;
         }
 
+    }
+    &-input {
+        position: relative;
+        width: calc(100% - 50px);
+        height: 45px;
+    }
+    &-hover:hover{
+        background-color:#dfdfdf
+    }
+    &-arrow{
+        transition-duration: .5s;
+        right: 0;
+        &-opened{
+            transform: rotate(180deg);
+        }
     }
 }
 </style>
