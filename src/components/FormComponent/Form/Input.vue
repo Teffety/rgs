@@ -47,7 +47,8 @@ export default {
         'date':{},
         'tel':{},
         'email':{},
-        'checkEmail':{}
+        'checkEmail':{},
+        'gosNum':{}
 
     },
 
@@ -68,13 +69,22 @@ export default {
     methods:{
         upper(event){
             if(this.up) this.val = event.target.value.toUpperCase();
-            if(this.masked.length == event.target.value.length){
-                this.data.success = true
-                this.data.error = false
-            }
-            else {      
-                this.data.success = false
-                this.data.error = true
+            if(!this.gosNum){
+                if(this.masked.length == event.target.value.length){
+                    this.data.success = true
+                    this.data.error = false
+                } else {      
+                    this.data.success = false
+                    this.data.error = true
+                }
+            }else if(this.gosNum){
+                if(this.masked.length == event.target.value.length || this.masked.length-1 == event.target.value.length){
+                    this.data.success = true
+                    this.data.error = false
+                } else {      
+                    this.data.success = false
+                    this.data.error = true
+                }
             }
             this.data.text = event.target.value   
             this.$emit('input', {...this.data})
@@ -107,7 +117,7 @@ export default {
             let leapYear = false
             if(date[0] && date[0].length==2 && date[0] >= 1 && date[0] <= 31){
                 
-                if(date[1] && date[1].length==2 && date[1] >=1 && date[1]<=12){
+                if(date[1] && date[1].length == 2 && date[1] >= 1 && date[1] <= 12){
 
                     if(date[0] == 29 && date[1] == 2){
                         if(date[2] && date[2].length==4 && date[2] < dateNow && date[2] > minYear){
@@ -129,17 +139,13 @@ export default {
                             this.data.success = true;
                             this.data.error = false;
                         }
-                    }else if(date[0] >=30 && (date[1] == 4 || date[1] == 7 || date[1] == 9 || date[1] == 11)){
+                    }else if(date[0] >= 30 && (date[1] == 4 || date[1] == 7 || date[1] == 9 || date[1] == 11)){
                         if(date[2] && date[2].length === 4 &&date[2] < dateNow && date[2] > minYear){
                             this.val=30 +'.' + date[1] +'.'+ date[2]
                             this.data.success = true
                             this.data.error = false
                             this.data.text = event.target.value
                         }
-                    }else if(date[1] <= 12 && date[1] <= 1){
-                        
-                        if(date[1] <=12 ) this.val = date[0] +'.'+ 12
-                        if(date[1] <= 1 ) this.val = date[0] +'.'+ '01'
                     }else{
                         if(date[2] && date[2].length === 4 && date[2] < dateNow && date[2] > minYear ){
                             this.data.success = true
